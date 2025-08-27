@@ -34,7 +34,3 @@ docker stop ollama
 docker restart ollama
 docker rm ollama
 docker volume rm ollama
-
-
-
-
