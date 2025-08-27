@@ -1,5 +1,3 @@
-# ollama-docker-container
-
 ```bash
 docker run -d \
   --name ollama \
