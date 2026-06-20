@@ -1,4 +1,4 @@
-# ollama-docker-container
+# Ollama Docker Container
 
 A Docker setup for running [Ollama](https://ollama.com) (local LLM serving) in a
 container. Models are pulled automatically on startup and persisted across
