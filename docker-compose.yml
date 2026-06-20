@@ -10,7 +10,7 @@ services:
       - ollama-data:/root/.ollama
     environment:
       # Space-separated list of models to pull on startup.
-      - PULL_MODELS=${PULL_MODELS:-llama3.2}
+      - PULL_MODELS=${PULL_MODELS:-llama3.2:1b}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "ollama", "list"]

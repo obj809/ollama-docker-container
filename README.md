@@ -19,7 +19,7 @@ curl http://localhost:11434/api/tags
 
 # Chat with a model
 curl http://localhost:11434/api/generate -d '{
-  "model": "llama3.2",
+  "model": "llama3.2:1b",
   "prompt": "Why is the sky blue?"
 }'
 ```
@@ -31,7 +31,7 @@ Set these in `.env` (see `.env.example`):
 | Variable      | Default     | Description                                            |
 | ------------- | ----------- | ------------------------------------------------------ |
 | `OLLAMA_PORT` | `11434`     | Host port mapped to the container's Ollama API.        |
-| `PULL_MODELS` | `llama3.2`  | Space-separated models to pull on startup.             |
+| `PULL_MODELS` | `llama3.2:1b` | Space-separated models to pull on startup.           |
 
 Browse available models at <https://ollama.com/library>.
 
