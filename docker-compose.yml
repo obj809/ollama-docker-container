@@ -11,6 +11,9 @@ services:
     environment:
       # Space-separated list of models to pull on startup.
       - PULL_MODELS=${PULL_MODELS:-llama3.2:1b}
+      # How long a model stays loaded in memory after the last request
+      # (e.g. 30s, 10m, 24h; -1 keeps it loaded indefinitely).
+      - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE:-24h}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "ollama", "list"]
