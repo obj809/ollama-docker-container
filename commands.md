@@ -32,8 +32,8 @@ docker compose restart         # restart the service
 ```bash
 docker compose exec ollama ollama list             # list installed models
 docker compose exec ollama ollama pull mistral     # pull another model
-docker compose exec ollama ollama rm llama3.2      # remove a model
-docker compose exec ollama ollama run llama3.2     # interactive chat in the container
+docker compose exec ollama ollama rm llama3.2:1b   # remove a model
+docker compose exec ollama ollama run llama3.2:1b  # interactive chat in the container
 ```
 
 To change which models are pulled automatically on startup, edit `PULL_MODELS`
@@ -47,13 +47,13 @@ curl http://localhost:11434/api/tags
 
 # Generate a completion
 curl http://localhost:11434/api/generate -d '{
-  "model": "llama3.2",
+  "model": "llama3.2:1b",
   "prompt": "Why is the sky blue?"
 }'
 
 # Chat completion
 curl http://localhost:11434/api/chat -d '{
-  "model": "llama3.2",
+  "model": "llama3.2:1b",
   "messages": [{ "role": "user", "content": "Hello!" }]
 }'
 ```
