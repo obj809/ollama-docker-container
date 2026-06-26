@@ -1,0 +1,63 @@
+# Production compose for the Hostinger VPS deployment.
+#
+# Run it explicitly (it is NOT picked up by a bare `docker compose up`):
+#   docker compose -f docker-compose.prod.yml up -d --build
+#   docker compose -f docker-compose.prod.yml logs -f
+#   docker compose -f docker-compose.prod.yml down
+#
+# Differences from the local `docker-compose.yml`:
+#   - No host port. The API is reachable ONLY by other containers on `webnet`
+#     (e.g. litellm) at http://ollama:11434. Publishing 11434 on this box would
+#     expose an unauthenticated Ollama to the internet — the origin firewall
+#     only guards 80/443.
+#   - Memory cap so Ollama can't starve NPM and the app containers on the
+#     shared 7.9 GB box.
+services:
+  ollama:
+    build: .
+    image: ollama-docker-container
+    container_name: ollama
+    # No `ports:` — internal-only. Consumers reach it at http://ollama:11434
+    # over the shared `webnet` network.
+    volumes:
+      # Persist downloaded models across container restarts.
+      - ollama-data:/root/.ollama
+    networks:
+      - webnet
+    environment:
+      # Space-separated list of models to pull on startup.
+      # Keep in sync with the api_base targets in litellm's config.yaml.
+      - PULL_MODELS=${PULL_MODELS:-llama3.2:1b deepseek-r1:1.5b}
+      # How long a model stays loaded in memory after the last request
+      # (e.g. 30s, 10m, 24h; -1 keeps it loaded indefinitely).
+      - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE:-24h}
+    restart: unless-stopped
+    # Guard rails for the shared 2 vCPU / 7.9 GB host. Adjust if you add larger
+    # models. Both default models (1b + 1.5b) fit comfortably under 4 GB.
+    mem_limit: 4g
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # --- NVIDIA GPU support ---
+    # This VPS has no GPU; Ollama runs CPU-only. Leave commented unless the box
+    # gains a GPU and the NVIDIA Container Toolkit is installed.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+volumes:
+  ollama-data:
+
+networks:
+  # Shared, externally-managed network that NPM and the app/litellm containers
+  # also join. Must already exist on the host: `docker network create webnet`.
+  webnet:
+    external: true
