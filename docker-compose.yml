@@ -8,6 +8,8 @@ services:
     volumes:
       # Persist downloaded models across container restarts.
       - ollama-data:/root/.ollama
+    networks:
+      - webnet
     environment:
       # Space-separated list of models to pull on startup.
       - PULL_MODELS=${PULL_MODELS:-llama3.2:1b}
@@ -34,3 +36,8 @@ services:
 
 volumes:
   ollama-data:
+
+networks:
+  # Pre-existing network managed outside this compose project.
+  webnet:
+    external: true
