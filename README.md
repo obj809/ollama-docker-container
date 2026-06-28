@@ -51,3 +51,4 @@ docker compose down -v         # stop and delete the model volume
 NVIDIA GPU acceleration requires the
 [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 on the host. Uncomment the `deploy.resources` block in `docker-compose.yml`.
+
