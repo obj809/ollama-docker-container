@@ -6,15 +6,11 @@ services:
     ports:
       - "${OLLAMA_PORT:-11434}:11434"
     volumes:
-      # Persist downloaded models across container restarts.
       - ollama-data:/root/.ollama
     networks:
       - webnet
     environment:
-      # Space-separated list of models to pull on startup.
       - PULL_MODELS=${PULL_MODELS:-llama3.2:1b}
-      # How long a model stays loaded in memory after the last request
-      # (e.g. 30s, 10m, 24h; -1 keeps it loaded indefinitely).
       - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE:-24h}
     restart: unless-stopped
     healthcheck:
@@ -25,7 +21,7 @@ services:
       start_period: 40s
 
     # --- NVIDIA GPU support ---
-    # Requires the NVIDIA Container Toolkit on the host. Uncomment to enable.
+    # Requires the NVIDIA Container Toolkit on the host.
     # deploy:
     #   resources:
     #     reservations:
@@ -38,6 +34,5 @@ volumes:
   ollama-data:
 
 networks:
-  # Pre-existing network managed outside this compose project.
   webnet:
     external: true
